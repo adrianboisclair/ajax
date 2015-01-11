@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript">
+        function getACookie(name){
+            var cookieName = document.getElementById("getme").value;
+            var allCookies = document.cookie.split(';');
+            var cookieData ="";
+
+            for (var i=0; i <allCookies.length; i++){
+                if ((allCookies[i].indexOf(cookieName)) != -1){
+                    match = allCookies[i].replace(" ", "");
+                    cookieData = match.substr((cookieName.length + 1));
+                    alert(cookieName + " " + cookieData);
+                }
+            }
+        }
+
+        function createCookie(newCookie){
+            var expDate= new Date();
+            expDate.setMonth(expDate.getMonth() + 1);
+            var cookieVal = document.getElementById(newCookie).value;
+            document.cookie = newCookie + "=" + cookieVal + ";path=/;expires=" + expDate.toGMTString();
+        }
+
+        function deleteCookies() {
+            var cookieToDel = document.getElementById("deleteme").value;
+            createCookie(cookieToDel, "", -1);
+        }
+    </script>
+    <noscript>
+        <h3>This site requires JavaScript</h3>
+    </noscript>
+</head>
+<body>
+
+    <p>Enter Your First Name
+    <input type="text" id="firstname" onblur="createCookie('firstname');"/><br /></p>
+
+    <p>Enter Your Last Name
+    <input type="text" id="lastname" onblur="createCookie('lastname');"/><br /></p>
+
+    <p>Cookie To Delete
+    <input type="text" id="deleteme" onblur="deleteCookies();" /><br /></p>
+
+    <p>Cookie To Get
+    <input type="text" id="getme" onblur="getACookie('firstname');"/><br /></p>
+
+    <script type="text/javascript">
+        document.write("Every Cookie: " +document.cookie);
+    </script>
+
+</body>
+</html>

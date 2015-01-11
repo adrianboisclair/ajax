@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript" src="movielibrary.js"></script>
+</head>
+<body onload="process()">
+    <h3>Adrian's Movie Library / Database</h3>
+    You can search for a movie title in the text field below:
+    <input type="text" id="userInput" />
+    <div id="serverResponse" />
+</body>
+</html>

@@ -1,0 +1,481 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>DRGMONEY.COM</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="text.css" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript">
+        /* <![CDATA[ */
+        var stockRequest = false;
+        var tickerSymbol = "^IXIC";
+        function getRequestObject() {
+            try {
+                httpRequest = new XMLHttpRequest();
+            }
+            catch (requestError) {
+                try {
+                    httpRequest = new ActiveXObject("Msxml2.XMLHTTP");
+                }
+                catch (requestError) {
+                    try {
+                        httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+                    }
+                    catch (requestError) {
+                        window.alert("Your browser does not support AJAX!");
+                        return false;
+                    }
+                }
+            }
+            return httpRequest;
+        }
+        function getStockQuote(newTicker) {
+            if (!stockRequest)
+                stockRequest = getRequestObject();
+            if (newTicker)
+                tickerSymbol = newTicker;
+            stockRequest.abort();
+            stockRequest.open("get", "StockCheck.php?" + "checkQuote=" + tickerSymbol, true);
+            stockRequest.send(null);
+            stockRequest.onreadystatechange = fillStockInfo;
+            var updateQuote = setTimeout('getStockQuote()', 10000);
+        }
+        function fillStockInfo() {
+            if (stockRequest.readyState == 4 && stockRequest.status == 200) {
+                var stockValues = stockRequest.responseXML;
+                document.getElementById("ticker").childNodes[0].nodeValue = stockValues.getElementsByTagName("ticker")[0].childNodes[0].nodeValue;
+                document.getElementById("openingPrice").innerHTML = stockValues.getElementsByTagName("open")[0].childNodes[0].nodeValue;
+                document.getElementById("lastTrade").innerHTML = "<strong>" + stockValues.getElementsByTagName("lastTrade")[0].childNodes[0].nodeValue + "</strong>";
+                document.getElementById("lastTradeDT").innerHTML = stockValues.getElementsByTagName("lastTradeDate")[0].childNodes[0].nodeValue + " " + stockValues.getElementsByTagName("lastTradeTime")[0].childNodes[0].nodeValue;
+                document.getElementById("change").innerHTML = stockValues.getElementsByTagName("change")[0].childNodes[0].nodeValue;
+                document.getElementById("range").innerHTML = stockValues.getElementsByTagName("rangeLow")[0].childNodes[0].nodeValue + " - " + stockValues.getElementsByTagName("rangeHigh")[0].childNodes[0].nodeValue;
+                var volume = parseInt(stockValues.getElementsByTagName("volume")[0].childNodes[0].nodeValue);
+                document.getElementById("volume").innerHTML = volume.toLocaleString();
+                document.getElementById("chart").innerHTML = "<img src=" + stockValues.getElementsByTagName("chart")[0].childNodes[0].nodeValue + " alt='Stock line chart from Yahoo.com.' />";
+            }
+        }
+        /* ]]> */
+    </script>
+
+</head>
+<body onload="getStockQuote(); getDow(); getNasdaq(); getSP()">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td align="left" valign="top" height="40" style="background: url(images/topbg01.gif)">
+                <img src="images/top_logo.gif" width="770" height="40" alt="Visual formatting image" />
+            </td>
+        </tr>
+        <tr>
+            <td align="left" valign="top">
+                <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td class="c2" width="170" align="center" valign="bottom" height="36">
+                            <table width="150" border="0" cellspacing="0" cellpadding="2">
+                                <tr>
+                                    <td align="center" class="text"></td>
+                                </tr>
+                                <tr>
+                                    <td align="center" class="text"><strong><span class="c1">News &amp; Analysis</span></strong>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td rowspan="6" align="left" valign="top">
+                            <table class="c7" border="0" cellspacing="0" cellpadding="2">
+                                <tr align="left">
+                                    <td>
+                                        <table width="120" border="0" cellspacing="0" cellpadding="1">
+                                            <tr>
+                                                <td width="55"><strong><span class="c3">DOW</span></strong></td>
+                                                <td width="47" align="right"><strong><span id="dowLastTrade" class="c4">8450.16</span></strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="55"><strong>
+                                                    <img id="dowDirection" src="IMAGES/red.gif" width="10" height="5" alt="Visual formatting image" />
+                                                    <span id="dowChange" class="c4">-88.08</span></strong> </td>
+                                                <td width="47" align="right"><strong><span id="dowPercentChange" class="c5">-1.03%</span></strong>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td valign="middle" width="6">
+                                        <img src="IMAGES/line.gif" width="6" height="30" alt="Visual formatting image" />
+                                    </td>
+                                    <td width="130">
+                                        <table width="120" border="0" cellspacing="0" cellpadding="1">
+                                            <tr>
+                                                <td width="55"><strong><span class="c3">NASDAQ</span></strong></td>
+                                                <td width="47" align="right"><strong><span id="nasdaqLastTrade" class="c4">1292.80</span></strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="55"><strong>
+                                                    <img id="nasdaqDirection" src="IMAGES/red.gif" width="10" height="5" alt="Visual formatting image" /><span
+                                                        id="nasdaqChange" class="c4">-16.87</span></strong> </td>
+                                                <td width="47" align="right"><strong><span id="nasdaqPercentChange" class="c5">-1.29%</span></strong>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td width="6" valign="middle">
+                                        <img src="IMAGES/line.gif" width="6" height="30" alt="Visual formatting image" />
+                                    </td>
+                                    <td width="130">
+                                        <table width="120" border="0" cellspacing="0" cellpadding="1">
+                                            <tr>
+                                                <td width="55"><strong><span class="c3">S&amp;P</span></strong></td>
+                                                <td width="47" align="right"><strong><span id="spLastTrade" class="c4">890.16</span></strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="55"><strong>
+                                                    <img id="spDirection" src="IMAGES/red.gif" width="10" height="5" alt="Visual formatting image" />
+                                                    <span id="spChange" class="c4">-9.56</span></strong> </td>
+                                                <td width="47" align="right"><strong><span id="spPercentChange" class="c5">-1.06%</span></strong>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td valign="middle" width="6">
+                                        <img src="IMAGES/line.gif" width="6" height="30" alt="Visual formatting image" />
+                                    </td>
+                                    <td width="100%">&nbsp;</td>
+                                </tr>
+                            </table>
+                            <table class="c8" width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td align="center">
+                                        <img src="IMAGES/SPACER.GIF" width="100" height="1" alt="Visual formatting image" />
+                                    </td>
+                                </tr>
+                            </table>
+                            <table width="600" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td width="79%" colspan="2">
+                                        <img src="IMAGES/SPACER.GIF" width="20" height="5" alt="Visual formatting image" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="480" align="center">
+                                        <img src="images/banner.gif" width="468" height="60" alt="Visual formatting image" />
+                                    </td>
+                                    <td align="center">
+                                        <table class="c11" width="120" border="0" cellspacing="1" cellpadding="4">
+                                            <tr>
+                                                <td><span class="c9"><strong>SEARCH</strong></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="c10">
+                                                    <table width="100%" border="0" cellspacing="0" cellpadding="2">
+                                                        <tr>
+                                                            <td width="56%">
+                                                                <input type="text" name="textfield" class="text" size="11" /></td>
+                                                            <td width="44%">
+                                                                <img src="IMAGES/go.gif" width="20" height="15" alt="Visual formatting image" />
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <img src="IMAGES/SPACER.GIF" width="50" height="10" alt="Visual formatting image" />
+                                    </td>
+                                </tr>
+                            </table>
+                            <table class="c11" width="100%" border="0" cellspacing="1" cellpadding="0">
+                                <tr>
+                                    <td class="c12" align="left" height="24" valign="top">
+                                        <img src="IMAGES/SPACER.GIF" width="10" height="24" alt="Visual formatting image" /><img
+                                            src="IMAGES/but01.gif" width="78" height="24" alt="Visual formatting image" /><img
+                                                src="IMAGES/SPACER.GIF" width="10" height="24" alt="Visual formatting image" /><img
+                                                    src="IMAGES/but02.gif" width="39" height="24" alt="Visual formatting image" /><img
+                                                        src="IMAGES/SPACER.GIF" width="10" height="24" alt="Visual formatting image" /><img
+                                                            src="IMAGES/but03.gif" width="34" height="24" alt="Visual formatting image" /><img
+                                                                src="IMAGES/SPACER.GIF" width="10" height="24" alt="Visual formatting image" /><img
+                                                                    src="IMAGES/but04.gif" width="48" height="24" alt="Visual formatting image" /><img
+                                                                        src="IMAGES/SPACER.GIF" width="10" height="24" alt="Visual formatting image" /><img
+                                                                            src="IMAGES/but05.gif" width="40" height="24" alt="Visual formatting image" /><img
+                                                                                src="IMAGES/SPACER.GIF" width="10" height="24" alt="Visual formatting image" /><img
+                                                                                    src="IMAGES/but06.gif" width="106" height="24" alt="Visual formatting image" /><img
+                                                                                        src="IMAGES/SPACER.GIF" width="10" height="24" alt="Visual formatting image" /><img
+                                                                                            src="IMAGES/but07.gif" width="103" height="24" alt="Visual formatting image" /><img
+                                                                                                src="IMAGES/SPACER.GIF" width="10" height="24" alt="Visual formatting image" /><img
+                                                                                                    src="IMAGES/but08.gif" width="60" height="24" alt="Visual formatting image" />
+                                    </td>
+                                </tr>
+                            </table>
+                            <table width="100%" border="0" cellspacing="0" cellpadding="2" class="c15">
+                                <tr>
+                                    <td colspan="2">
+                                        <img src="images/spacer.gif" width="20" height="10" alt="Visual formatting image" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text">
+                                        <h2>
+                                            Stock Quotes</h2>
+                                        <form action="" method="get" enctype="application/x-www-form-urlencoded">
+                                        <p>
+                                            Ticker Symbol
+                                            <input type="text" name="symbol" />
+                                            <input type="button" onclick="getStockQuote(document.forms[0].symbol.value)" value="Get Quote" /></p>
+                                        <table border="1" cellpadding="5">
+                                            <colgroup span="2" width="215px" />
+                                            <tr>
+                                                <td>
+                                                    <table id="tickerTable" border="0">
+                                                        <tr style="background-color: cyan">
+                                                            <td>Ticker Symbol</td>
+                                                            <td id="ticker">&nbsp;</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Opening Price</td>
+                                                            <td id="openingPrice">&nbsp;</td>
+                                                        </tr>
+                                                        <tr style="background-color: cyan">
+                                                            <td>Last Trade Price</td>
+                                                            <td id="lastTrade"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Last Trade Date/Time</td>
+                                                            <td id="lastTradeDT">&nbsp;</td>
+                                                        </tr>
+                                                        <tr style="background-color: cyan">
+                                                            <td>Change</td>
+                                                            <td id="change">&nbsp;</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Day's Range</td>
+                                                            <td id="range">&nbsp;</td>
+                                                        </tr>
+                                                        <tr style="background-color: cyan">
+                                                            <td>Average Volume</td>
+                                                            <td id="volume">&nbsp;</td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td id="chart">
+                                                    <img src="http://ichart.finance.yahoo.com/t?s=%5EIXIC" alt="Stock line chart from Yahoo.com." />
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <img src="images/spacer.gif" width="20" height="5" alt="Visual formatting image" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="c17" align="center" width="170" valign="middle" height="170">
+                            <table width="140" border="0" cellpadding="2" cellspacing="0" class="text">
+                                <tr>
+                                    <td width="4%">
+                                        <img src="images/arrow.gif" width="9" height="11" alt="Visual formatting image" />
+                                    </td>
+                                    <td width="96%"><span class="c16">Market Update</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="images/arrow.gif" width="9" height="11" alt="Visual formatting image" />
+                                    </td>
+                                    <td><span class="c16">Daily Briefing</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="images/arrow.gif" width="9" height="11" alt="Visual formatting image" />
+                                    </td>
+                                    <td><span class="c16">Breaking News</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="images/arrow.gif" width="9" height="11" alt="Visual formatting image" />
+                                    </td>
+                                    <td><span class="c16">Pundit Watch</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="images/arrow.gif" width="9" height="11" alt="Visual formatting image" />
+                                    </td>
+                                    <td><span class="c16">Tech Watch</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="images/arrow.gif" width="9" height="11" alt="Visual formatting image" />
+                                    </td>
+                                    <td><span class="c16">IPOs</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="images/arrow.gif" width="9" height="11" alt="Visual formatting image" />
+                                    </td>
+                                    <td><span class="c16">The Data Mine</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="images/arrow.gif" width="9" height="11" alt="Visual formatting image" />
+                                    </td>
+                                    <td><span class="c16">One-Day Wonder</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="images/arrow.gif" width="9" height="11" alt="Visual formatting image" />
+                                    </td>
+                                    <td><span class="c16">The Weekly List</span></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="c2" align="center" width="170" height="36" valign="bottom">
+                            <table width="150" border="0" cellspacing="0" cellpadding="2">
+                                <tr>
+                                    <td align="center" class="text"></td>
+                                </tr>
+                                <tr>
+                                    <td align="center" class="text"><strong><span class="c1">Commentary</span></strong>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="c17" align="center" width="170" height="115" valign="middle">
+                            <table width="140" border="0" cellpadding="2" cellspacing="0" class="text">
+                                <tr>
+                                    <td width="4%">
+                                        <img src="images/arrow.gif" width="9" height="11" alt="Visual formatting image" />
+                                    </td>
+                                    <td width="96%"><span class="c16">Common Sense</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="images/arrow.gif" width="9" height="11" alt="Visual formatting image" />
+                                    </td>
+                                    <td><span class="c16">Stock Close-Up</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="images/arrow.gif" width="9" height="11" alt="Visual formatting image" />
+                                    </td>
+                                    <td><span class="c16">Tradecraft</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="images/arrow.gif" width="9" height="11" alt="Visual formatting image" />
+                                    </td>
+                                    <td><span class="c16">Ahead of the Curve</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="images/arrow.gif" width="9" height="11" alt="Visual formatting image" />
+                                    </td>
+                                    <td><span class="c16">Techwise</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="images/arrow.gif" width="9" height="11" alt="Visual formatting image" />
+                                    </td>
+                                    <td><span class="c16">Stock Screen</span></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="c2" align="center" width="170" height="36" valign="bottom">
+                            <table width="150" border="0" cellspacing="0" cellpadding="2">
+                                <tr>
+                                    <td align="center" class="text"></td>
+                                </tr>
+                                <tr>
+                                    <td align="center" class="text"><strong><span class="c1">Maps</span></strong></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="c17" align="center" valign="top" width="170">
+                            <table width="140" border="0" cellpadding="2" cellspacing="0" class="text">
+                                <tr>
+                                    <td width="4%">
+                                        <img src="images/arrow.gif" width="9" height="11" alt="Visual formatting image" />
+                                    </td>
+                                    <td width="96%"><span class="c16">Map of the Market</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="images/arrow.gif" width="9" height="11" alt="Visual formatting image" />
+                                    </td>
+                                    <td><span class="c16">IPO Map</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="images/arrow.gif" width="9" height="11" alt="Visual formatting image" />
+                                    </td>
+                                    <td><span class="c16">Sector Maps</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="images/arrow.gif" width="9" height="11" alt="Visual formatting image" />
+                                    </td>
+                                    <td><span class="c16">Mutual Fund Map</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="images/arrow.gif" width="9" height="11" alt="Visual formatting image" />
+                                    </td>
+                                    <td><span class="c16">Market Map 1000</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="images/arrow.gif" width="9" height="11" alt="Visual formatting image" />
+                                    </td>
+                                    <td><span class="c16">Fund Map 1000</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="images/arrow.gif" width="9" height="11" alt="Visual formatting image" />
+                                    </td>
+                                    <td><span class="c16">Map Your Portfolio</span></td>
+                                </tr>
+                                <tr style="height:500px" valign="top">
+                                    <td>
+                                        <img src="images/arrow.gif" width="9" height="11" alt="Visual formatting image" />
+                                    </td>
+                                    <td><span class="c16">Real Time Sector Maps</span></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td height="26" align="left" valign="top" style="background-color: black">
+                <table width="770" border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td align="center">
+                            <table width="82%" border="0" cellspacing="0" cellpadding="8">
+                                <tr>
+                                    <td align="center"><span class="c19">&copy; 2010 DRGMONEY, Inc. All rights reserved.
+                                        <span class="c18">Terms of Use and Disclaimer</span></span></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
